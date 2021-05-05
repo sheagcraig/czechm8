@@ -32,7 +32,7 @@ def get_args():
         nargs="+",
         action="extend",
         type=str,
-        default=[]
+        default=[],
     )
     parser.add_argument(
         "-c",
@@ -41,12 +41,13 @@ def get_args():
         nargs="+",
         action="extend",
         type=str,
-        default=[]
+        default=[],
     )
     parser.add_argument(
         "-d",
         "--date",
-        help="ISO8601 date (YYYY-MM-DD) after which games will be downloaded. Defaults to 1969-12-31")
+        help="ISO8601 date (YYYY-MM-DD) after which games will be downloaded. Defaults to 1969-12-31",
+    )
 
     return parser.parse_args()
 
@@ -61,7 +62,7 @@ def get_lichess_games(users, from_date):
         print(f"Getting lichess games for {user}...")
         url = f"https://lichess.org/api/games/user/{user}"
         response = requests.get(url, params={"since": timestamp})
-        count = response.text.count('\n\n\n')
+        count = response.text.count("\n\n\n")
         print(f"{url} {count} games ✅")
 
     return response.text
@@ -83,15 +84,15 @@ def get_chess_games(users, from_date):
             year, month = segments[-2:]
             url_date = datetime.date(year=int(year), month=int(month), day=1)
             if url_date < from_date and not (
-                url_date.year == from_date.year and
-                url_date.month == from_date.month):
+                url_date.year == from_date.year and url_date.month == from_date.month
+            ):
                 continue
             response = requests.get(f"{url}/pgn")
             pgn = response.text
             if url_date.year == from_date.year and url_date.month == from_date.month:
                 pgn = date_filter_games(pgn, from_date)
             games.append(pgn)
-            count = pgn.count('\n\n\n')
+            count = pgn.count("\n\n\n")
             print(f"{url} {count} games ✅")
 
     return games
@@ -100,13 +101,14 @@ def get_chess_games(users, from_date):
 def date_filter_games(pgn, from_date):
     filtered = []
     for game in pgn.split("\n\n\n"):
-        found = re.search(r'\[UTCDate "(?P<year>\d{4})\.(?P<month>\d{2})\.(?P<day>\d{2})', game)
+        found = re.search(
+            r'\[UTCDate "(?P<year>\d{4})\.(?P<month>\d{2})\.(?P<day>\d{2})', game
+        )
         if found:
             bits = found.groupdict()
             match_date = datetime.date(
-                year=int(bits["year"]),
-                month=int(bits["month"]),
-                day=int(bits["day"]))
+                year=int(bits["year"]), month=int(bits["month"]), day=int(bits["day"])
+            )
             if match_date < from_date:
                 continue
         filtered.append(game)
@@ -125,9 +127,11 @@ def main():
         from_date = datetime.date.fromisoformat(args.date)
     else:
         from_date = datetime.date.fromtimestamp(0)
+    print("Ahoj! Stáhněte si nás...")
     games.extend(get_lichess_games(args.lichess, from_date))
     games.extend(get_chess_games(args.chess, from_date))
     write_pgn(args.filename, games)
+    print("Všechny práce byly dokončeny!")
 
 
 if __name__ == "__main__":
