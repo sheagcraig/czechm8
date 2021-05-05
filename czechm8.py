@@ -12,10 +12,10 @@ https://www.reddit.com/r/chess/comments/9ifkaq/how_i_downloaded_all_my_chesscom_
 
 import argparse
 import datetime
-import time
 import json
 import pathlib
 import re
+import time
 
 import requests
 
