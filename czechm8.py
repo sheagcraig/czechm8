@@ -62,8 +62,9 @@ def get_lichess_games(users, from_date):
         response = requests.get(url, params={"since": timestamp})
         count = response.text.count("\n\n\n")
         print(f"{url} {count} games ✅")
+        games.append(response.text)
 
-    return response.text
+    return games
 
 
 def get_chess_games(users, from_date):
