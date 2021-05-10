@@ -29,8 +29,7 @@ def get_args():
         "-l",
         "--lichess",
         help="lichess account names to retrieve",
-        nargs="+",
-        action="extend",
+        action="append",
         type=str,
         default=[],
     )
@@ -38,8 +37,7 @@ def get_args():
         "-c",
         "--chess",
         help="chess.com account names to retrieve",
-        nargs="+",
-        action="extend",
+        action="append",
         type=str,
         default=[],
     )
