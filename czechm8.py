@@ -91,7 +91,10 @@ def get_chess_games(users, from_date):
             if url_date.year == from_date.year and url_date.month == from_date.month:
                 pgn = date_filter_games(pgn, from_date)
             games.append(pgn)
-            count = pgn.count("\n\n\n")
+            # The monthly archive omits months with no games, so there's
+            # always at least one. The triple newline will only be present
+            # if there is a second game, so a classic off by one situation.
+            count = pgn.count("\n\n\n") + 1
             print(f"{url} {count} games ✅")
 
     return games
